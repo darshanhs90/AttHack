@@ -22,6 +22,9 @@ app.controller('myCtrl', function($scope, $http,$window) {
     }
 
     $scope.getList=function(){
+        
+
+        
         $http({
             url: 'http://hashrite.mybluemix.net/getLabels',
             method: "GET"

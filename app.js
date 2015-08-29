@@ -119,7 +119,7 @@ app.get('/getLocation',function(req,res){
   var lat=req.query.lat;
   var longt=req.query.longt;
   var location;
-  https.get('https://maps.googleapis.com/maps/api/place/search/json?location='lat+','+longt+'&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
+  https.get('https://maps.googleapis.com/maps/api/place/search/json?location='+lat+','+longt+'&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
     function(response) {
       location=response.results[0].name;
       api.search({"q":location,"sort_by":"date","start_date.keyword":"this_week"}, function (error, data) {
