@@ -87,6 +87,8 @@ server.listen(appEnv.port, appEnv.bind, function() {
 
 app.post('/upload',function(req,res){
     var data1='';
+    console.log(req.data);
+    console.log(req.file);
     req.on('data',function(d){
         data1+=d;
     })
