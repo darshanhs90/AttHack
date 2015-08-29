@@ -32,8 +32,8 @@ require('./config/express')(app);
 // if bluemix credentials exists, then override local
 var credentials = extend({
   version: 'v1',
-  username: '<username>',
-  password: '<password>'
+  username: 'cf7fbbd2-0de4-4792-b770-9eda5f7d2edd',
+  password: 'U7pz6w4qRZrO'
 }, bluemix.getServiceCreds('visual_recognition')); // VCAP_SERVICES
 
 // Create the service wrapper
@@ -44,29 +44,29 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.post('/', function(req, res) {
+app.post('/login', function(req, res) {
 
   // Classifiers are 0 = all or a json = {label_groups:['<classifier-name>']}
-  var classifier = req.body.classifier || '0';  // All
+  var classifier = '0';  // All
   if (classifier !== '0') {
     classifier = JSON.stringify({label_groups:[classifier]});
   }
 
   var imgFile;
-
-  if (req.files.image) {
-    // file image
-    imgFile = fs.createReadStream(req.files.image.path);
-  } else if(req.body.url && validator.isURL(req.body.url)) {
-    // web image
-    imgFile = request(req.body.url.split('?')[0]);
-  } else if (req.body.url && req.body.url.indexOf('images') === 0) {
-    // local image
-    imgFile = fs.createReadStream(path.join('public',req.body.url));
-  } else {
-    // malformed url
-    return res.status(500).json({ error: 'Malformed URL' });
-  }
+imgFile = fs.createReadStream(req.query.imagepath);
+  // if (req.files.image) {
+  //   // file image
+  //   imgFile = fs.createReadStream(req.query.image.path);
+  // } else if(req.body.url && validator.isURL(req.body.url)) {
+  //   // web image
+  //   imgFile = request(req.body.url.split('?')[0]);
+  // } else if (req.body.url && req.body.url.indexOf('images') === 0) {
+  //   // local image
+  //   imgFile = fs.createReadStream(path.join('public',req.body.url));
+  // } else {
+  //   // malformed url
+  //   return res.status(500).json({ error: 'Malformed URL' });
+  // }
 
   var formData = {
     labels_to_check: classifier,
