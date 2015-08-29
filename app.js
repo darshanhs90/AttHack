@@ -118,16 +118,23 @@ app.get('/getLocation',function(req,res){
   var lat=33.008080;//33.008080,-96.751585
   var longt=-96.751585;
   var location;
-  https.get('https://maps.googleapis.com/maps/api/place/search/json?location='+lat+','+longt+'&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
+  https.get('https://maps.googleapis.com/maps/api/place/search/json?location=33.008080,-96.751585&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
     function(response) {
-      location=response.results[0].name;
-      api.search({"q":location,"sort_by":"date","start_date.keyword":"this_week"}, function (error, data) {
-        if (error)
-          console.log(error.message);
-        else{
-          res.send(JSON.stringify(data)); 
-          res.end();
+      var dta='';
+      response.on('data',function(d){
+        dta+=d;
+      })
+      response.on('end',function(){
+
+        location=dta.results[0].name;
+        api.search({"q":location,"sort_by":"date","start_date.keyword":"this_week"}, function (error, data) {
+          if (error)
+            console.log(error.message);
+          else{
+            res.send(JSON.stringify(data)); 
+            res.end();
         }// Do something with your data! 
+      });
       });
 
     });
@@ -155,23 +162,23 @@ app.get('/getAlchemy',function(req,res){
 app.get('/postImg',function(req,res){
   var status=req.query.status1;
   twitterRestClient.statusesUpdateWithMedia(
+  {
+    'status': status,
+    'media[]': filePath
+  },
+  function(error, result) {
+    if (error)
     {
-        'status': status,
-        'media[]': filePath
-    },
-    function(error, result) {
-        if (error)
-        {
-            console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
-            res.end('Error');
-        }
+      console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
+      res.end('Error');
+    }
 
-        if (result)
-        {
-            res.send(result);
-            res.end();
-        }
-    });
+    if (result)
+    {
+      res.send(result);
+      res.end();
+    }
+  });
 })
 
 
