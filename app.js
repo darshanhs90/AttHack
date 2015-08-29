@@ -90,13 +90,15 @@ app.post('/upload',function(req,res){
         if(err) {
             return console.log(err);
         }
+        fs.readFile('a.txt', 'utf8', function (err,data) {
+          if (err) {
+            return console.log(err);
+        }
+        res.send(data);
+        res.end();
+    });
 
-    res.send('file uploaded');
-    res.end();
     }); 
-
-
-
 
 });
 
