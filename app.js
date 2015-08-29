@@ -103,7 +103,7 @@ app.post('/', function(req, res) {
       return res.status(error.error ? error.error.code || 500 : 500).json({ error: error });
     else{
       hashData=result.images[0].labels;
-      res.end();
+      res.sendFile('/index.html');
     }
   });
 });

@@ -26,8 +26,7 @@ app.controller('myCtrl', function($scope, $http,$window) {
 
         $http({
             url: 'http://hashrite.mybluemix.net/getLocation',
-            method: "GET",
-            params:{lat:$scope.lat,longt:$scope.longt}
+            method: "GET"
         }).success(function(data, status, headers, config) {
            $scope.eventList=data;
        });
