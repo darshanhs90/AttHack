@@ -14,17 +14,41 @@
  * limitations under the License.
  */
 
-'use strict';
+ 'use strict';
 
-var express = require('express'),
-  app = express(),
-  request = require('request'),
-  path = require('path'),
-  bluemix = require('./config/bluemix'),
-  validator = require('validator'),
-  watson = require('watson-developer-cloud'),
-  extend = require('util')._extend,
-  fs = require('fs');
+ var express = require('express'),
+ app = express(),
+ request = require('request'),
+ path = require('path'),
+ bluemix = require('./config/bluemix'),
+ validator = require('validator'),
+ watson = require('watson-developer-cloud'),
+ extend = require('util')._extend,
+ fs = require('fs');
+ var https=require('https');
+ var eventbriteAPI = require('node-eventbrite');
+ 
+ var token = 'AGVZGIF2LDBGP33DPEWZ';
+ var AlchemyAPI = require('alchemy-api');
+ var alchemy = new AlchemyAPI('7b6bf4773c39c9e271f6bd999fea5df5179a6dad'); 
+ try {
+  var api = eventbriteAPI({
+    token: token,
+    version : 'v3'
+  });
+} catch (error) {
+    console.log(error.message); // the options are missing, this function throws an error. 
+  }
+
+  var Twitter = require('node-twitter');
+
+  var twitterRestClient = new Twitter.RestClient(
+    'LmNp3JwAQZnuBr4SQFaM7UZG3',
+    'Xps6ziqIhZ0exAPoIAeyqj7myu7L78ZLHQDni67dzD9koJQTAD',
+    '151128859-F4Wk8KebqH4ZDwp8tMWY8PkoTQzfiEJrN1t2Knfc',
+    'czQre16YZKoC4Csi18gGufu8PxF733aL5VnzbhurlGvHw'
+    );
+
 
 // Bootstrap application settings
 require('./config/express')(app);
@@ -43,7 +67,8 @@ var visualRecognition = watson.visual_recognition(credentials);
 app.get('/', function(req, res) {
   res.render('index');
 });
-
+var filePath='';
+var hashData=[];
 app.post('/', function(req, res) {
 
   // Classifiers are 0 = all or a json = {label_groups:['<classifier-name>']}
@@ -51,9 +76,9 @@ app.post('/', function(req, res) {
   if (classifier !== '0') {
     classifier = JSON.stringify({label_groups:[classifier]});
   }
-
-console.log(req.files);
-var imgFile = fs.createReadStream(req.files.file.path);
+  filePath=req.files.file.path;
+  console.log(req.files);
+  var imgFile = fs.createReadStream(req.files.file.path);
   // if (req.files.image) {
   //   // file image
   //   imgFile = fs.createReadStream(req.query.image.path);
@@ -76,10 +101,86 @@ var imgFile = fs.createReadStream(req.files.file.path);
   visualRecognition.recognize(formData, function(error, result) {
     if (error)
       return res.status(error.error ? error.error.code || 500 : 500).json({ error: error });
-    else
-      return res.json(result);
+    else{
+      hashData=result.images[0].labels;
+      res.send(result);
+      res.end();
+    }
   });
 });
+
+
+app.get('/getLocation',function(req,res){
+  var lat=req.query.lat;
+  var longt=req.query.longt;
+  var location;
+  https.get('https://maps.googleapis.com/maps/api/place/search/json?location='lat+','+longt+'&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
+    function(response) {
+      location=response.results[0].name;
+      api.search({"q":location,"sort_by":"date","start_date.keyword":"this_week"}, function (error, data) {
+        if (error)
+          console.log(error.message);
+        else{
+          res.send(JSON.stringify(data)); 
+          res.end();
+        }// Do something with your data! 
+      });
+
+    });
+})
+
+
+app.get('/getAlchemy',function(req,res){
+  var dta=[];
+  for (var i = 0;i<hashData.length;i++){
+
+    alchemy.sentiment(hashData[i].label_name, {}, function(err, response) {
+      if (err)
+        throw err;
+      var sentiment = response.docSentiment;
+      dta.push(sentiment);
+    });
+    if(i==hashData.length-1){
+      res.send(dta);
+      res.end();
+    }
+  }
+})
+
+
+app.get('/postImg',function(req,res){
+  var status=req.query.status;
+  twitterRestClient.statusesUpdateWithMedia(
+    {
+        'status': status,
+        'media[]': filePath
+    },
+    function(error, result) {
+        if (error)
+        {
+            console.log('Error: ' + (error.code ? error.code + ' ' + error.message : error.message));
+            res.end('Error');
+        }
+
+        if (result)
+        {
+            res.send(result);
+            res.end();
+        }
+    });
+})
+
+
+
+
+
+
+
+
+
+
+
+
 
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
