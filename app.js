@@ -116,8 +116,8 @@ app.get('/getLabels',function(req,res){
 
 
 app.get('/getLocation',function(req,res){
-  var lat=req.query.lat;
-  var longt=req.query.longt;
+  var lat=33.008080;//33.008080,-96.751585
+  var longt=-96.751585;
   var location;
   https.get('https://maps.googleapis.com/maps/api/place/search/json?location='+lat+','+longt+'&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
     function(response) {

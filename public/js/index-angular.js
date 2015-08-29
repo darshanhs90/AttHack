@@ -8,23 +8,24 @@ app.controller('myCtrl', function($scope, $http,$window) {
 
 
     $scope.hashList=[];
-    function getLocation() {
+    console.log(navigator.geolocation);
         if (navigator.geolocation) {
+            console.log('asd');
             navigator.geolocation.getCurrentPosition(showPosition);
         } 
-    }
     $scope.lat='';
     $scope.longt='';
 
     function showPosition(position) {
         $scope.lat=position.coords.latitude ;
+        console.log($scope.lat);
         $scope.longt=position.coords.longitude;  
     }
 
     $scope.getList=function(){
-        
 
-        
+
+
         $http({
             url: 'http://hashrite.mybluemix.net/getLabels',
             method: "GET"
@@ -32,13 +33,13 @@ app.controller('myCtrl', function($scope, $http,$window) {
            $scope.hashList=data;
        });
 
-        $http({
-            url: 'http://hashrite.mybluemix.net/getLocation',
-            method: "GET",
-            params:{lat:$scope.lat,longt:$scope.longt}
-        }).success(function(data, status, headers, config) {
-           $scope.eventList=data;
-       });
+       //  $http({
+       //      url: 'http://hashrite.mybluemix.net/getLocation',
+       //      method: "GET",
+       //      params:{lat:$scope.lat,longt:$scope.longt}
+       //  }).success(function(data, status, headers, config) {
+       //     $scope.eventList=data;
+       // });
     };
 
     $scope.sendTweet=function(){
