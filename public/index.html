@@ -53,8 +53,8 @@
  <div class="loading block"> <!-- LOADING (RIGHT-CONTAINER) -->
      Location/Events Suggestions
      <table>
-         <tr ng-repeat="y in eventList.events track by $index">
-             <div ng-click="addEvents($index)">{{y[$index].name}}</div>
+         <tr ng-repeat="y in eventList track by $index">
+             <div ng-click="addEvents($index)">{{y.name}}</div>
          </tr>
      </table>
  </div>
