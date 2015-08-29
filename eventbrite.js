@@ -19,28 +19,8 @@ try {
     console.log(error.message); // the options are missing, this function throws an error. 
 }
  
-// api.search({"location.latitude":"","location.longitude":""}, function (error, data) {
-//     if (error)
-//         console.log(error.message);
-//     else
-//         console.log(JSON.stringify(data)); // Do something with your data! 
-// });
-
-
-var currentDate=new Date().getDate();
-var previousDate=new Date().getDate();
-var currentMonth=new Date().getMonth()+1;
-var previousMonth=new Date().getMonth()-1;
-var year="2015";
-var previousTime="T01:01:01Z"
-var currentTime="T23:59:59Z"
-var previousDateTime=year+"-"+previousMonth+"-"+previousDate+previousTime;
-var currentDateTime=year+"-"+currentMonth+"-"+currentDate+currentTime;
-console.log(previousDateTime);
-console.log(currentDateTime);
-//AIzaSyDWUnMGxYQzaDMTJSkH8btb4oJnLVGo178
-
-api.search({"sort_by":"-date","venue.city":"Dallas","start_date.range_start":previousDateTime,"start_date.range_end":currentDateTime}, function (error, data) {
+//https://maps.googleapis.com/maps/api/place/search/json?location=33.008080,-96.751585&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ
+api.search({"q":"Plano","sort_by":"date","start_date.keyword":"this_week"}, function (error, data) {
     if (error)
         console.log(error.message);
     else
