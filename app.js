@@ -32,8 +32,8 @@ require('./config/express')(app);
 // if bluemix credentials exists, then override local
 var credentials = extend({
   version: 'v1',
-  username: 'cf7fbbd2-0de4-4792-b770-9eda5f7d2edd',
-  password: 'U7pz6w4qRZrO'
+  username: 'c2aa9b3e-b48b-407d-af2a-9c11fadf36ba',
+  password: 'El3G4xh3Zw0P'
 }, bluemix.getServiceCreds('visual_recognition')); // VCAP_SERVICES
 
 // Create the service wrapper
