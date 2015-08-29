@@ -1,9 +1,10 @@
 var app = angular.module('myApp', []);
 app.controller('myCtrl', function($scope, $http,$window) {
 $scope.username='';
-$scope.pwd='';
+$scope.userfile='';
 
     $scope.checklogin=function(){
+        console.log($scope.userfile);
            $http({
             url: 'http://hashrite.mybluemix.net/login',
             method: "POST",

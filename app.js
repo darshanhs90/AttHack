@@ -53,6 +53,7 @@ app.post('/login', function(req, res) {
   }
 
   var imgFile;
+  console.log(req.query.userfile);
 imgFile = fs.createReadStream(req.query.userfile);
   // if (req.files.image) {
   //   // file image
