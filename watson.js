@@ -28,6 +28,19 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
+app.post('/upload',function(req,res){
+  console.log(req.file);
+  fs.writeFile("a.png", "Hey there!", function(err) {
+    if(err) {
+      return console.log(err);
+    }
+
+    console.log("The file was saved!");
+  }); 
+
+})
+
+
 app.get('/upload', function(req, res) {
 
   // Classifiers are 0 = all or a json = {label_groups:['<classifier-name>']}
@@ -68,7 +81,6 @@ app.get('/upload', function(req, res) {
 });
 
 var port = process.env.VCAP_APP_PORT || 3000;
-app.listen(port,'127.0.0.1',function(){
+app.listen('1337','127.0.0.1',function(){
   console.log('listening');
 });
-console.log('listening at:', port);

@@ -1,7 +1,7 @@
 applications:
 - disk_quota: 1024M
-  host: fantweet
-  name: fantweet
+  host: hashrite
+  name: hashrite
   path: .
   domain: mybluemix.net
   instances: 1
