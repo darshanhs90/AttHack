@@ -21,14 +21,14 @@ app.controller('myCtrl', function($scope, $http,$window) {
             url: 'http://hashrite.mybluemix.net/getLabels',
             method: "GET"
         }).success(function(data, status, headers, config) {
-           $scope.hashList=JSON.parse(data);
+           $scope.hashList=(data);
        });
 
         $http({
             url: 'http://hashrite.mybluemix.net/getLocation',
             method: "GET"
         }).success(function(data, status, headers, config) {
-           $scope.eventList=JSON.parse(data).events;
+           $scope.eventList=data.events;
 
        });
     };
