@@ -21,14 +21,16 @@ app.controller('myCtrl', function($scope, $http,$window) {
             url: 'http://hashrite.mybluemix.net/getLabels',
             method: "GET"
         }).success(function(data, status, headers, config) {
-           $scope.hashList=(data);
+            updateArray(data);
+          
        });
 
         $http({
             url: 'http://hashrite.mybluemix.net/getLocation',
             method: "GET"
         }).success(function(data, status, headers, config) {
-           $scope.eventList=data.events;
+updateArray1(data.events);
+         
 
        });
     };
@@ -43,7 +45,19 @@ app.controller('myCtrl', function($scope, $http,$window) {
         });
     };
 
+function updateArray(newUser){
+  $scope.$apply(function() { 
 
+ $scope.hashList=(newUser);
+  });
+ 
+};
+function updateArray1(newUser){
+  $scope.$apply(function() {
+      $scope.eventList=newUser;
+  });
+ 
+};
 
 
 
