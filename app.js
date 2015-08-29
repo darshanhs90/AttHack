@@ -52,8 +52,8 @@ app.post('/', function(req, res) {
     classifier = JSON.stringify({label_groups:[classifier]});
   }
 
-
-imgFile = fs.createReadStream(req.files.image.path);
+console.log(req.files);
+imgFile = fs.createReadStream(req.files[0].path);
   // if (req.files.image) {
   //   // file image
   //   imgFile = fs.createReadStream(req.query.image.path);
