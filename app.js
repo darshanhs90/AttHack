@@ -87,14 +87,12 @@ server.listen(appEnv.port, appEnv.bind, function() {
 
 app.post('/upload',function(req,res){
     var data1='';
-    console.log(req.data);
-    console.log(req.file);
     req.on('data',function(d){
         data1+=d;
     })
+    console.log(data1);
 
-
-    fs.writeFile("a.txt", data1, function(err) {
+    fs.writeFile("a.txt", req, function(err) {
         if(err) {
             return console.log(err);
         }
