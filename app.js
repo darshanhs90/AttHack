@@ -133,7 +133,7 @@ app.get('/getLocation',function(req,res){
           if (error)
             console.log(error.message);
           else{
-            res.send(JSON.stringify(data)); s
+            res.send(JSON.stringify(data)); 
             res.end();
         }// Do something with your data! 
       });
