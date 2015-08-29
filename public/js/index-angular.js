@@ -12,6 +12,8 @@ app.controller('myCtrl', function($scope, $http,$window) {
     $scope.longt='';
 
 
+$scope.a='';
+$scope.b='';
 
     $scope.getList=function(){
 
