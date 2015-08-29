@@ -119,7 +119,8 @@ app.get('/getLocation',function(req,res){
   var longt=-96.751585;
   var location;
   https.get('https://maps.googleapis.com/maps/api/place/search/json?location=33.008080,-96.751585&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
-    function(response) {
+    function(error,response) {
+      console.log(response);
       var dta='';
       response.on('data',function(d){
         dta+=d;
