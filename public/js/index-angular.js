@@ -25,7 +25,7 @@ $scope.b='';
         }).success(function(data, status, headers, config) {
           $scope.hashList=data;
           for (var i = data.length - 2; i >= 0; i--) {
-              $scope.a+=data[i].label_name+",";
+              $scope.a+="#"+data[i].label_name+" , ";
           };
 
 
