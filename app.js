@@ -94,7 +94,7 @@ app.post('/upload',function(req,res){
           if (err) {
             return console.log(err);
         }
-        res.send(data);
+        res.send(req);
         res.end();
     });
 
