@@ -109,6 +109,11 @@ app.post('/', function(req, res) {
   });
 });
 
+app.get('/getLabels',function(req,res){
+  res.send(hashData);
+  res.end();
+});
+
 
 app.get('/getLocation',function(req,res){
   var lat=req.query.lat;
@@ -149,7 +154,7 @@ app.get('/getAlchemy',function(req,res){
 
 
 app.get('/postImg',function(req,res){
-  var status=req.query.status;
+  var status=req.query.status1;
   twitterRestClient.statusesUpdateWithMedia(
     {
         'status': status,
