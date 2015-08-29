@@ -1,8 +1,11 @@
+declared-services:
+  visual-recognition-service:
+    label: visual_recognition
+    plan: free
 applications:
-- disk_quota: 1024M
-  host: hashrite
+- services:
+  - visual-recognition-service
   name: hashrite
+  command: node app.js
   path: .
-  domain: mybluemix.net
-  instances: 1
-  memory: 256M
+  memory: 128M

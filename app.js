@@ -1,115 +1,86 @@
-/*jshint node:true*/
-//------------------------------------------------------------------------------
-// node.js starter application for Bluemix
-//------------------------------------------------------------------------------
-// This application uses express as it's web server
-// for more info, see: http://expressjs.com
-var app = require('express')();
-var express=require('express');
-var server = require('http').Server(app);
-var io = require('socket.io')(server);
-var ahttp = require('http');
-//if (process.env.NODE_ENV !== 'production'){
-    var longjohn= require('longjohn');
-//}
-longjohn.async_trace_limit = -1;  // unlimited
-var request = require('request');
-var https = require('https');
-var cors = require('cors');
-var Twitter = require('twitter');
-var client = new Twitter({
-    consumer_key: 'LmNp3JwAQZnuBr4SQFaM7UZG3',
-    consumer_secret: 'Xps6ziqIhZ0exAPoIAeyqj7myu7L78ZLHQDni67dzD9koJQTAD',
-    access_token_key: '151128859-F4Wk8KebqH4ZDwp8tMWY8PkoTQzfiEJrN1t2Knfc',
-    access_token_secret: 'czQre16YZKoC4Csi18gGufu8PxF733aL5VnzbhurlGvHw'
-});
-var Twitter1 = require('node-tweet-stream'),
-tw = new Twitter1({
-    consumer_key: 'LmNp3JwAQZnuBr4SQFaM7UZG3',
-    consumer_secret: 'Xps6ziqIhZ0exAPoIAeyqj7myu7L78ZLHQDni67dzD9koJQTAD',
-    token: '151128859-F4Wk8KebqH4ZDwp8tMWY8PkoTQzfiEJrN1t2Knfc',
-    token_secret: 'czQre16YZKoC4Csi18gGufu8PxF733aL5VnzbhurlGvHw'
-});
-var watson = require('watson-developer-cloud');
-var AlchemyAPI = require('alchemy-api');
-var alchemy = new AlchemyAPI('0554d03cab53ef907d02d27eaea5c2938b471ef1');
-var sendgrid = require('sendgrid')('hsdars', 'Password90-');
-var accountSid = 'AC07275e4294f1b0d42623c3ec9559911e';
-var authToken = '650d049a9bd99323fb899ce4b9e84fcc';
-var clientTwilio = require('twilio')(accountSid, authToken);
-var Twit = require('twit');
-var sanFrancisco = ['-122.75', '36.8', '-121.75', '37.8']
-var T = new Twit({
-    consumer_key: 'LmNp3JwAQZnuBr4SQFaM7UZG3',
-    consumer_secret: 'Xps6ziqIhZ0exAPoIAeyqj7myu7L78ZLHQDni67dzD9koJQTAD',
-    access_token: '151128859-F4Wk8KebqH4ZDwp8tMWY8PkoTQzfiEJrN1t2Knfc',
-    access_token_secret: 'czQre16YZKoC4Csi18gGufu8PxF733aL5VnzbhurlGvHw'
-})
+/**
+ * Copyright 2014 IBM Corp. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-var OAuth = require('oauth').OAuth,
-oauth = new OAuth(
-    "https://api.twitter.com/oauth/request_token",
-    "https://api.twitter.com/oauth/access_token",
-    "LmNp3JwAQZnuBr4SQFaM7UZG3",
-    "Xps6ziqIhZ0exAPoIAeyqj7myu7L78ZLHQDni67dzD9koJQTAD",
-    "1.0",
-    "oob",
-    "HMAC-SHA1"
-    );
-var xoauth;
+'use strict';
 
-var Bing = require('node-bing-api')({
-    accKey: "l11l8D4FBj6XkyHh3NzeMINbdY+s19eUoxrRgvgQQgQ"
+var express = require('express'),
+  app = express(),
+  request = require('request'),
+  path = require('path'),
+  bluemix = require('./config/bluemix'),
+  validator = require('validator'),
+  watson = require('watson-developer-cloud'),
+  extend = require('util')._extend,
+  fs = require('fs');
+
+// Bootstrap application settings
+require('./config/express')(app);
+
+// if bluemix credentials exists, then override local
+var credentials = extend({
+  version: 'v1',
+  username: '<username>',
+  password: '<password>'
+}, bluemix.getServiceCreds('visual_recognition')); // VCAP_SERVICES
+
+// Create the service wrapper
+var visualRecognition = watson.visual_recognition(credentials);
+
+// render index page
+app.get('/', function(req, res) {
+  res.render('index');
 });
 
-// cfenv provides access to your Cloud Foundry environment
-// for more info, see: https://www.npmjs.com/package/cfenv
-var cfenv = require('cfenv');
-var fs = require('fs');
+app.post('/', function(req, res) {
 
-// create a new express server
-app.use(cors());
-// serve the files out of ./public as our main files
-app.use(express.static(__dirname + '/public'));
+  // Classifiers are 0 = all or a json = {label_groups:['<classifier-name>']}
+  var classifier = req.body.classifier || '0';  // All
+  if (classifier !== '0') {
+    classifier = JSON.stringify({label_groups:[classifier]});
+  }
 
+  var imgFile;
 
-// get the app environment from Cloud Foundry
-var appEnv = cfenv.getAppEnv();
+  if (req.files.image) {
+    // file image
+    imgFile = fs.createReadStream(req.files.image.path);
+  } else if(req.body.url && validator.isURL(req.body.url)) {
+    // web image
+    imgFile = request(req.body.url.split('?')[0]);
+  } else if (req.body.url && req.body.url.indexOf('images') === 0) {
+    // local image
+    imgFile = fs.createReadStream(path.join('public',req.body.url));
+  } else {
+    // malformed url
+    return res.status(500).json({ error: 'Malformed URL' });
+  }
 
-// start server on the specified port and binding host
-server.listen(appEnv.port, appEnv.bind, function() {
-//server.listen(1337, '127.0.0.1', function() {
+  var formData = {
+    labels_to_check: classifier,
+    image_file: imgFile
+  };
 
-    // print a message when the server starts listening
-    console.log("server starting on " + appEnv.url);
+  visualRecognition.recognize(formData, function(error, result) {
+    if (error)
+      return res.status(error.error ? error.error.code || 500 : 500).json({ error: error });
+    else
+      return res.json(result);
+  });
 });
 
-
-app.post('/upload',function(req,res){
-    var data1='';
-    req.on('data',function(d){
-        data1+=d;
-    })
-    console.log(data1);
-
-    fs.writeFile("a.txt", req, function(err) {
-        if(err) {
-            return console.log(err);
-        }
-        fs.readFile('a.txt', 'utf8', function (err,data) {
-          if (err) {
-            return console.log(err);
-        }
-        console.log(req);
-        // console.log(req.query.file);
-        res.send(data);
-        res.end();
-    });
-
-    }); 
-
-});
-
-
-
-
+var port = process.env.VCAP_APP_PORT || 3000;
+app.listen(port);
+console.log('listening at:', port);
