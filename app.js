@@ -44,7 +44,7 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
-app.post('/login', function(req, res) {
+app.post('/', function(req, res) {
 
   // Classifiers are 0 = all or a json = {label_groups:['<classifier-name>']}
   var classifier = '0';  // All
@@ -52,9 +52,8 @@ app.post('/login', function(req, res) {
     classifier = JSON.stringify({label_groups:[classifier]});
   }
 
-  var imgFile=req.query.imagepath.replace("C:\\fakepath\\","");
-  console.log(imgFile);
-imgFile = fs.createReadStream(imgFile);
+
+imgFile = fs.createReadStream(req.files.image.path);
   // if (req.files.image) {
   //   // file image
   //   imgFile = fs.createReadStream(req.query.image.path);

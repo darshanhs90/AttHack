@@ -7,7 +7,13 @@
 
 
     <div>asdasdas</div>
-    <input type='file' ng-model="userfile" id="fileInput"/><br>
+
+<form action="/" method="post" enctype="multipart/form-data">
+  <p><input type="file" name="file">
+  <p><button type="submit">Submit</button>
+</form>
+
+    <input type='file' name="image" ng-model="userfile" id="fileInput"/><br>
     {{userfile}}
     <input type='button' name='upload_btn' value='upload' ng-click="checklogin()"/>
 
