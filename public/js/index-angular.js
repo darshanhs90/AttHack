@@ -3,7 +3,9 @@ app.controller('myCtrl', function($scope, $http,$window) {
 $scope.username='';
 $scope.userfile='';
 
-    $scope.checklogin=function(){
+document.getElementById('fileInput').onchange = function () {
+    $scope.userfile=this.value;
+   // $scope.checklogin=function(){
         console.log($scope.userfile);
            $http({
             url: 'http://hashrite.mybluemix.net/login',
@@ -14,4 +16,5 @@ $scope.userfile='';
             
         });
     }
+    //}
 });
