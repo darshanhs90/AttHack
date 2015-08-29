@@ -53,7 +53,7 @@ app.post('/', function(req, res) {
   }
 
 console.log(req.files);
-imgFile = fs.createReadStream(req.files.file.path);
+var imgFile = fs.createReadStream(req.files.file.path);
   // if (req.files.image) {
   //   // file image
   //   imgFile = fs.createReadStream(req.query.image.path);
