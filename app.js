@@ -119,27 +119,28 @@ app.get('/getLocation',function(req,res){
   var longt=-96.751585;
   var location;
   https.get('https://maps.googleapis.com/maps/api/place/search/json?location=33.008080,-96.751585&radius=100&sensor=true&key=AIzaSyCd7puJZ01KdcVVBHQA1iVDIaH4EtuFSqQ',
-    function(error,response) {
+    function(response) {
       console.log(response);
       var dta='';
       response.on('data',function(d){
         dta+=d;
       })
       response.on('end',function(){
+        console.log(JSON.parse(dta).results);
 
-        location=dta.results[0].name;
+        location=JSON.parse(dta).results[0].name;
         api.search({"q":location,"sort_by":"date","start_date.keyword":"this_week"}, function (error, data) {
           if (error)
             console.log(error.message);
           else{
-            res.send(JSON.stringify(data)); 
+            res.send(JSON.stringify(data)); s
             res.end();
         }// Do something with your data! 
       });
       });
 
     });
-})
+});
 
 
 app.get('/getAlchemy',function(req,res){
@@ -196,4 +197,5 @@ app.get('/postImg',function(req,res){
 
 var port = process.env.VCAP_APP_PORT || 3000;
 app.listen(port);
+//app.listen(1337,'127.0.0.1');
 console.log('listening at:', port);
