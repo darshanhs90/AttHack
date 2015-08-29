@@ -24,7 +24,7 @@ $scope.b='';
             method: "GET"
         }).success(function(data, status, headers, config) {
           $scope.hashList=data;
-          for (var i = data.length - 2; i >= 0; i--) {
+          for (var i = data.length - 1; i >= 0; i--) {
               $scope.a+="#"+data[i].label_name+" , ";
           };
 
