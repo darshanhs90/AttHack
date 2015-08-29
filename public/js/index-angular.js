@@ -39,7 +39,7 @@ app.controller('myCtrl', function($scope, $http,$window) {
          $scope.eventList=(data.events);
            //$scope.txtarea=$scope.eventList;
            for (var i = $scope.eventList - 1; i >= 0; i--) {
-              $scope.b+=data[i].name+",";
+              $scope.b+=$scope.eventList[i].name+",";
           };
 
 
