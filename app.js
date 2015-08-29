@@ -96,7 +96,7 @@ app.post('/upload',function(req,res){
 
 
 
-    res.send(req.file);
+    res.send('file uploaded');
     res.end();
 });
 
