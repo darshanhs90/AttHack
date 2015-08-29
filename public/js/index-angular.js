@@ -5,7 +5,7 @@ $scope.pwd='';
 
     $scope.checklogin=function(){
            $http({
-            url: 'https://hashrite.mybluemix.net/login',
+            url: 'http://hashrite.mybluemix.net/login',
             method: "POST",
             params:{imagepath:$scope.userfile}
         }).success(function(data, status, headers, config) {
