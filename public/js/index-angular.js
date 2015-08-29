@@ -21,25 +21,29 @@ app.controller('myCtrl', function($scope, $http,$window) {
             url: 'http://hashrite.mybluemix.net/getLabels',
             method: "GET"
         }).success(function(data, status, headers, config) {
-              $scope.hashList=data;
-              $scope.a=data;
+          $scope.hashList=data;
+          for (var i = data.length - 1; i >= 0; i--) {
+              $scope.a+=data[i].label_name+",";
+          };
 
-         
 
 
-        });
+
+      });
 
         $http({
             url: 'http://hashrite.mybluemix.net/getLocation',
             method: "GET"
         }).success(function(data, status, headers, config) {
 
-           $scope.eventList=(data.events);
-           $scope.txtarea=$scope.eventList;
-           $scope.b=$scope.eventList;
+         $scope.eventList=(data.events);
+           //$scope.txtarea=$scope.eventList;
+           for (var i = $scope.eventList - 1; i >= 0; i--) {
+              $scope.b+=data[i].name+",";
+          };
 
 
-       });
+      });
     };
 
     $scope.sendTweet=function(){
