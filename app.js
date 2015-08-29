@@ -91,13 +91,13 @@ app.post('/upload',function(req,res){
             return console.log(err);
         }
 
-        console.log("The file was saved!");
+    res.send('file uploaded');
+    res.end();
     }); 
 
 
 
-    res.send('file uploaded');
-    res.end();
+
 });
 
 
