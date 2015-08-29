@@ -52,9 +52,9 @@ app.post('/login', function(req, res) {
     classifier = JSON.stringify({label_groups:[classifier]});
   }
 
-  var imgFile;
-  console.log(req.query.imagepath);
-imgFile = fs.createReadStream(req.query.imagepath);
+  var imgFile=req.query.imagepath.replace("C:\\fakepath\\","");
+  console.log(imgFile);
+imgFile = fs.createReadStream(imgFile);
   // if (req.files.image) {
   //   // file image
   //   imgFile = fs.createReadStream(req.query.image.path);
