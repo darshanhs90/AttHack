@@ -21,21 +21,23 @@ app.controller('myCtrl', function($scope, $http,$window) {
             url: 'http://hashrite.mybluemix.net/getLabels',
             method: "GET"
         }).success(function(data, status, headers, config) {
-            $scope.$apply(function() {
-      $scope.eventList=data;
-  });
-          
-       });
+              $scope.hashList=data;
+              $scope.a=data;
+
+         
+
+
+        });
 
         $http({
             url: 'http://hashrite.mybluemix.net/getLocation',
             method: "GET"
         }).success(function(data, status, headers, config) {
-            $scope.$apply(function() { 
 
- $scope.hashList=(data.events);
-  });
-         
+           $scope.eventList=(data.events);
+           $scope.txtarea=$scope.eventList;
+           $scope.b=$scope.eventList;
+
 
        });
     };
@@ -50,14 +52,6 @@ app.controller('myCtrl', function($scope, $http,$window) {
         });
     };
 
-function updateArray(newUser){
-  
- 
-};
-function updateArray1(newUser){
-
- 
-};
 
 
 
